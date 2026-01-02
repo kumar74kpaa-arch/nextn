@@ -39,7 +39,7 @@ export default function BillPreview({ bill }: BillPreviewProps) {
     return value.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
   
-  const emptyRowsCount = items ? Math.max(0, 8 - items.length) : 8;
+  const emptyRowsCount = items ? Math.max(0, 5 - items.length) : 5;
 
   return (
     <div id="bill-preview-content" className="printable-area bg-white rounded-none shadow-lg h-full max-w-4xl mx-auto p-8 text-[9pt] text-black font-verdana">
