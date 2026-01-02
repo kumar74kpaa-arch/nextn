@@ -34,9 +34,14 @@ export default function BillPreview({ bill }: BillPreviewProps) {
     stateCode
   } = bill;
 
-  const formatCurrency = (value: number | undefined) => {
-    if (typeof value !== 'number') return '0.00';
+  const formatCurrency = (value: number | undefined | null) => {
+    if (typeof value !== 'number' || isNaN(value)) return '0.00';
     return value.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  const formatPercent = (value: number | undefined | null) => {
+    if (typeof value !== 'number' || isNaN(value)) return '-';
+    return `${value.toFixed(2)}%`;
   }
   
   const emptyRowsCount = items ? Math.max(0, 5 - items.length) : 5;
@@ -140,8 +145,8 @@ export default function BillPreview({ bill }: BillPreviewProps) {
                         <td className="p-1 text-center border-r border-black">{index + 1}</td>
                         <td className="p-1 border-r border-black whitespace-pre-wrap">{item.description}</td>
                         <td className="p-1 text-center border-r border-black">{item.hsnSac}</td>
-                        <td className="p-1 text-right border-r border-black">{formatCurrency(item.totalValue)}</td>
-                        <td className="p-1 text-right border-r border-black">{item.dueNowPercent.toFixed(2)}%</td>
+                        <td className="p-1 text-right border-r border-black">{typeof item.totalValue === 'number' ? formatCurrency(item.totalValue) : '-'}</td>
+                        <td className="p-1 text-right border-r border-black">{formatPercent(item.dueNowPercent)}</td>
                         <td className="p-1 text-right">{formatCurrency(item.dueNowAmount)}</td>
                     </tr>
                 ))}
@@ -227,7 +232,3 @@ export default function BillPreview({ bill }: BillPreviewProps) {
     </div>
   );
 }
-
-    
-
-    
