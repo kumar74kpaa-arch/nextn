@@ -76,7 +76,7 @@ export default function BillPreview({ bill }: BillPreviewProps) {
 
       <header className="grid grid-cols-3 items-start mb-4">
         <div className="col-span-1">
-          <Image src="https://i.ibb.co/wJgWfNq/logo.png" alt="Company Logo" width={96} height={96} data-ai-hint="logo building" />
+          <Image src="https://gastric-gray-znxjxevm6f.edgeone.app/logo%20uniarch.jpg" alt="Company Logo" width={96} height={96} data-ai-hint="logo building" />
         </div>
         <div className="col-span-2 text-left -ml-16">
           <h2 className="font-bold text-sm">{companyName}</h2>

@@ -45,6 +45,12 @@ const nextConfig: NextConfig = {
         hostname: 'img.freepik.com',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'gastric-gray-znxjxevm6f.edgeone.app',
+        port: '',
+        pathname: '/**',
       }
     ],
   },
