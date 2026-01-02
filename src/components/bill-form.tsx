@@ -294,7 +294,7 @@ export default function BillForm({ bills, onLoadBill }: BillFormProps) {
                     <FormItem>
                         <FormLabel>Subtotal Amount</FormLabel>
                         <FormControl>
-                        <Input readOnly value={field.value.toFixed(2)} className="bg-muted/60 font-medium" />
+                        <Input type="number" {...field} />
                         </FormControl>
                         <FormMessage />
                     </FormItem>

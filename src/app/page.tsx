@@ -91,7 +91,7 @@ export default function BillSwiftPage() {
 
 
   const watchedValues = form.watch();
-  const { items, cgstPercent, sgstPercent } = watchedValues;
+  const { items, amount, cgstPercent, sgstPercent } = watchedValues;
 
   React.useEffect(() => {
     const subtotal = items.reduce((acc, item) => {
@@ -100,21 +100,26 @@ export default function BillSwiftPage() {
         const dueNowAmount = (totalValue * dueNowPercent) / 100;
         return acc + dueNowAmount;
     }, 0);
+    // We don't set the amount from items anymore, we use the form's `amount` value
+    // form.setValue('amount', subtotal, { shouldValidate: true });
+  }, [items, form]);
 
+
+  React.useEffect(() => {
+    const parsedSubtotal = typeof amount === 'number' ? amount : 0;
     const parsedCgstPercent = typeof cgstPercent === 'number' ? cgstPercent : 0;
     const parsedSgstPercent = typeof sgstPercent === 'number' ? sgstPercent : 0;
     
-    const cgst = (subtotal * parsedCgstPercent) / 100;
-    const sgst = (subtotal * parsedSgstPercent) / 100;
-    const total = subtotal + cgst + sgst;
+    const cgst = (parsedSubtotal * parsedCgstPercent) / 100;
+    const sgst = (parsedSubtotal * parsedSgstPercent) / 100;
+    const total = parsedSubtotal + cgst + sgst;
     
-    form.setValue('amount', subtotal, { shouldValidate: true });
-    form.setValue('cgstAmount', cgst, { shouldValidate: true });
-    form.setValue('sgstAmount', sgst, { shouldValidate: true });
-    form.setValue('totalAmount', total, { shouldValidate: true });
-    form.setValue('totalAmountInWords', `Rupees ${numberToWords(total)} Only`, { shouldValidate: true });
+    form.setValue('cgstAmount', cgst, { shouldValidate: true, shouldDirty: true });
+    form.setValue('sgstAmount', sgst, { shouldValidate: true, shouldDirty: true });
+    form.setValue('totalAmount', total, { shouldValidate: true, shouldDirty: true });
+    form.setValue('totalAmountInWords', `Rupees ${numberToWords(total)} Only`, { shouldValidate: true, shouldDirty: true });
 
-  }, [items, cgstPercent, sgstPercent, form]);
+  }, [amount, cgstPercent, sgstPercent, form]);
 
   const handlePrint = () => {
     window.print();
@@ -146,6 +151,7 @@ export default function BillSwiftPage() {
       date: billData.date,
       billTo: billData.billTo,
       totalAmount: billData.totalAmount,
+      amount: billData.totalAmount ? billData.totalAmount / 1.18 : 0,
       items: [{
         description: 'Loaded Item',
         hsnSac: '',
