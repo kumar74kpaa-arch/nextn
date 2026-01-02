@@ -48,7 +48,7 @@ export default function BillPreview({ bill }: BillPreviewProps) {
       
       <header className="grid grid-cols-3 items-start mb-4">
         <div className="col-span-1">
-          <Image src="/unarch-logo.png" alt="UNARCH & BUILD Logo" width={96} height={96} data-ai-hint="logo building" />
+          <Image src="https://instagram.fdel27-1.fna.fbcdn.net/v/t51.2885-19/573980674_17843203005611437_7137649613987586067_n.jpg?stp=dst-jpg_s150x150_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6InByb2ZpbGVfcGljLmRqYW5nby4xMDgwLmMyIn0&_nc_ht=instagram.fdel27-1.fna.fbcdn.net&_nc_cat=101&_nc_oc=Q6cZ2QFncpCLCQ-SbsAONzH8tBoTH2BDQla-fW31dWJ5xAczGd4k0ECoV6Z73Lfwog689ffxOe27xyuoAjm0MTR814xv&_nc_ohc=InzPBLXPO8gQ7kNvwFzraIQ&_nc_gid=ZWZAmxmiNOSPjEQi_EAIIg&edm=APs17CUBAAAA&ccb=7-5&oh=00_Afpym4C7MSGayWG6ttR1mCWUdHkuVdGgP7bd4OJcEtOlpg&oe=695D33E5&_nc_sid=10d13b" alt="UNARCH & BUILD Logo" width={96} height={96} data-ai-hint="logo building" />
         </div>
         <div className="col-span-2 text-left -ml-16">
           <h2 className="font-bold text-sm">UNARCH & BUILD</h2>
@@ -64,20 +64,18 @@ export default function BillPreview({ bill }: BillPreviewProps) {
         <h1 className="text-base font-bold underline">Tax Invoice</h1>
       </div>
 
-      <div className="grid grid-cols-2 mb-2 text-[8pt]">
-          <div className='col-span-1 grid grid-cols-2'>
-              <div>
-                  <p className='font-bold'>Bill To</p>
-                  <p className="whitespace-pre-wrap leading-tight">{billTo}</p>
-                  <p className="leading-tight">GSTIN: {gstin || 'N/A'}</p>
-                  {workOrderNo && <p className="leading-tight">Work Order: {workOrderNo}</p>}
-              </div>
-              <div>
-                  <p className='font-bold'>Ship To</p>
-                  <p className="whitespace-pre-wrap leading-tight">{shipTo}</p>
-              </div>
+      <div className="grid grid-cols-3 mb-2 text-[8pt]">
+          <div className='col-span-1'>
+              <p className='font-bold'>Bill To</p>
+              <p className="whitespace-pre-wrap leading-tight">{billTo}</p>
+              <p className="leading-tight">GSTIN: {gstin || 'N/A'}</p>
+              {workOrderNo && <p className="leading-tight">Work Order: {workOrderNo}</p>}
           </div>
-          <div className='text-right'>
+          <div className='col-span-1'>
+              <p className='font-bold'>Ship To</p>
+              <p className="whitespace-pre-wrap leading-tight">{shipTo}</p>
+          </div>
+          <div className='col-span-1 text-right'>
               <div className='flex justify-end'>
                   <span className='w-24 font-bold text-left'>Invoice No.</span>
                   <span>{billNo}</span>
