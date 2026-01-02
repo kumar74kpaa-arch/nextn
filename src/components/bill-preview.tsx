@@ -1,87 +1,174 @@
 'use client';
 import type { Bill } from '@/lib/types';
-import { Card, CardContent } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
+import Image from 'next/image';
 
 interface BillPreviewProps {
   bill: Bill;
 }
 
 export default function BillPreview({ bill }: BillPreviewProps) {
-  const { billTo, shipTo, billNo, date, workOrderNo, gstin, amount, gstPercent, taxAmount, totalAmount } = bill;
+  const { 
+    billTo, 
+    shipTo, 
+    billNo, 
+    date, 
+    workOrderNo, 
+    gstin, 
+    amount, 
+    cgstPercent, 
+    sgstPercent,
+    cgstAmount,
+    sgstAmount,
+    totalAmount,
+    itemDescription,
+    invoiceDescription,
+    hsnSac,
+    totalAmountInWords,
+    placeOfSupply,
+    stateCode
+  } = bill;
 
   const formatCurrency = (value: number | undefined) => {
-    if (typeof value !== 'number') return '₹ 0.00';
-    return `₹ ${value.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    if (typeof value !== 'number') return '0.00';
+    return value.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
   return (
-    <div id="bill-preview-content" className="printable-area bg-white rounded-lg shadow-lg h-full max-w-4xl mx-auto p-4 lg:p-12 text-sm text-gray-800">
-      <header className="flex justify-between items-start mb-10">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 uppercase">Tax Invoice</h1>
-          {/* Company details would go here */}
+    <div id="bill-preview-content" className="printable-area bg-white rounded-none shadow-lg h-full max-w-4xl mx-auto p-8 text-[9pt] text-black font-verdana">
+      <style jsx global>{`
+        .font-verdana {
+          font-family: 'Verdana', sans-serif;
+        }
+        .text-black {
+          color: #000;
+        }
+      `}</style>
+      
+      <header className="grid grid-cols-3 items-start mb-4">
+        <div className="col-span-1">
+          <Image src="/unarch-logo.png" alt="UNARCH & BUILD Logo" width={96} height={96} data-ai-hint="logo building" />
         </div>
-        <div className="text-right">
-            <p className="font-semibold">Invoice No: <span className="font-normal">{billNo || 'N/A'}</span></p>
-            <p className="font-semibold">Date: <span className="font-normal">{date ? new Date(date + 'T00:00:00').toLocaleDateString('en-GB') : 'N/A'}</span></p>
-            {workOrderNo && (
-                <p className="font-semibold">Work Order No: <span className="font-normal">{workOrderNo}</span></p>
-            )}
+        <div className="col-span-2 text-left -ml-16">
+          <h2 className="font-bold text-sm">UNARCH & BUILD</h2>
+          <p className='text-[8pt] leading-tight'>104, OC-07, Orange County Amisha</p>
+          <p className='text-[8pt] leading-tight'>Khand-1, Ghaziabad, UP-201014</p>
+          <p className='text-[8pt] leading-tight'>GSTIN: 09DWTPS 5635F1ZV State</p>
+          <p className='text-[8pt] leading-tight'>: Uttar Pradesh, Code : 09</p>
+          <p className='text-[8pt] leading-tight'>amitsainii@gmail.com</p>
         </div>
       </header>
       
-      <section className="grid grid-cols-2 gap-10 mb-10">
-        <div>
-            <h2 className="text-xs uppercase text-gray-500 font-bold mb-2 border-b pb-1">Bill To</h2>
-            <p className="font-semibold whitespace-pre-wrap">{billTo || 'Client Name'}</p>
-        </div>
-         <div>
-            <h2 className="text-xs uppercase text-gray-500 font-bold mb-2 border-b pb-1">Ship To</h2>
-            <p className="font-semibold whitespace-pre-wrap">{shipTo || 'Shipping Address'}</p>
-        </div>
-      </section>
+      <div className='text-center w-full mb-4'>
+        <h1 className="text-base font-bold underline">Tax Invoice</h1>
+      </div>
 
-      {gstin && <p className="mb-8 font-semibold">GSTIN: <span className="font-normal">{gstin}</span></p>}
+      <div className="grid grid-cols-2 mb-2">
+        <div className='text-[8pt]'>
+            <p className='font-bold mb-1'>Bill To</p>
+            <p className="whitespace-pre-wrap leading-tight">{billTo}</p>
+            <p className="leading-tight">GSTIN: {gstin || 'N/A'}</p>
+            {workOrderNo && <p className="leading-tight">Work Order: {workOrderNo}</p>}
+        </div>
+        <div className='text-right text-[8pt]'>
+            <p className='flex justify-end'><span className='w-28 font-bold text-left'>Invoice No.</span>: {billNo}</p>
+            <p className='flex justify-end'><span className='w-28 font-bold text-left'>Date</span>: {date ? new Date(date + 'T00:00:00').toLocaleDateString('en-GB') : 'N/A'}</p>
+        </div>
+      </div>
+       <div className="grid grid-cols-2 mb-4">
+        <div className='text-[8pt]'>
+            <p className='font-bold mb-1'>Ship To</p>
+            <p className="whitespace-pre-wrap leading-tight">{shipTo}</p>
+        </div>
+        <div className='text-right text-[8pt]'>
+             <p className='flex justify-end'><span className='w-28 font-bold text-left'>Place of Supply</span>: {placeOfSupply}</p>
+             <p className='flex justify-end'><span className='w-28 font-bold text-left'>State</span>: Delhi, Code: {stateCode}</p>
+        </div>
+      </div>
+
 
       <section>
-        <table className="w-full mb-10">
-            <thead className="bg-gray-100">
-                <tr>
-                    <th className="p-3 text-left font-bold text-gray-600 uppercase">Description</th>
-                    <th className="p-3 text-right font-bold text-gray-600 uppercase">Amount</th>
+        <table className="w-full border-collapse border border-black text-[8pt]">
+            <thead className="bg-white">
+                <tr className='border-b border-black'>
+                    <th className="p-1 text-center font-bold border-r border-black w-10">Sl. No.</th>
+                    <th className="p-1 text-center font-bold border-r border-black">Item Details</th>
+                    <th className="p-1 text-center font-bold border-r border-black w-24">HSN/SAC</th>
+                    <th className="p-1 text-center font-bold border-r border-black w-28">Total Value</th>
+                    <th className="p-1 text-center font-bold border-r border-black w-24">Due Now in (%)</th>
+                    <th className="p-1 text-center font-bold w-32">Due Now in Amount</th>
                 </tr>
             </thead>
             <tbody>
-                <tr className="border-b">
-                    <td className="p-3">Service or Product Provided</td>
-                    <td className="p-3 text-right">{formatCurrency(amount)}</td>
+                <tr className="align-top">
+                    <td className="p-1 text-center border-r border-black">1</td>
+                    <td className="p-1 border-r border-black">{itemDescription}</td>
+                    <td className="p-1 text-center border-r border-black">{hsnSac}</td>
+                    <td className="p-1 text-right border-r border-black"></td>
+                    <td className="p-1 text-right border-r border-black"></td>
+                    <td className="p-1 text-right">{formatCurrency(amount)}</td>
+                </tr>
+                 <tr className="align-top h-48">
+                    <td className="p-1 border-r border-black border-t border-black"></td>
+                    <td className="p-1 border-r border-black border-t border-black">
+                        <p className='font-bold'>Tax Amount: <span className='font-normal'>{totalAmountInWords}</span></p>
+                    </td>
+                    <td className="p-1 border-r border-black border-t border-black"></td>
+                    <td className="p-1 border-r border-black border-t border-black"></td>
+                    <td className="p-1 border-r border-black border-t border-black"></td>
+                    <td className="p-1 border-t border-black"></td>
                 </tr>
             </tbody>
         </table>
       </section>
 
-      <section className="flex justify-end">
-        <div className="w-full max-w-xs space-y-2">
-            <div className="flex justify-between">
-                <p className="text-gray-600">Subtotal</p>
-                <p className="font-semibold">{formatCurrency(amount)}</p>
+      <section className="flex justify-between mt-0">
+          <div className='w-1/2'>
+            <p className='font-bold text-[8pt] mt-2'>Invoice Description: <span className='font-normal'>{invoiceDescription}</span></p>
+            <div className='text-[8pt] mt-2'>
+              <p>We declare that this invoice shows the actual price of the goods</p>
+              <p>described and that all particulars are true and correct.</p>
+            </div>
+          </div>
+        <div className="w-1/2 max-w-sm space-y-0 text-[8pt]">
+             <div className="flex justify-between border-t border-black">
+                <p className="p-1 font-bold">SUB TOTAL</p>
+                <p className="p-1 font-bold">{formatCurrency(amount)}</p>
             </div>
             <div className="flex justify-between">
-                <p className="text-gray-600">GST ({gstPercent || 0}%)</p>
-                <p className="font-semibold">{formatCurrency(taxAmount)}</p>
+                <p className="p-1">CGST @ {cgstPercent || 0}.00 %</p>
+                <p className="p-1">{formatCurrency(cgstAmount)}</p>
             </div>
-            <Separator className="my-2 bg-gray-300"/>
-            <div className="flex justify-between items-center">
-                <p className="text-lg font-bold text-gray-900">Total</p>
-                <p className="text-lg font-bold text-gray-900">{formatCurrency(totalAmount)}</p>
+             <div className="flex justify-between">
+                <p className="p-1">SGST @ {sgstPercent || 0}.00 %</p>
+                <p className="p-1">{formatCurrency(sgstAmount)}</p>
+            </div>
+            <div className="flex justify-between bg-white border-t border-b border-black">
+                <p className="p-1 font-bold">TOTAL</p>
+                <p className="p-1 font-bold">₹ {formatCurrency(totalAmount)}</p>
             </div>
         </div>
       </section>
       
-      <footer className="mt-20 pt-5 border-t text-xs text-gray-500 text-center">
-        <p>Thank you for your business!</p>
-        <p>Company Name | company@email.com | +91 12345 67890</p>
+      <footer className="mt-4 text-[8pt]">
+         <div className='grid grid-cols-2'>
+            <div></div>
+            <div className='text-center'>
+              <p>For UNARCH & BUILD</p>
+              <div className="h-12"></div>
+              <p className='border-t border-black pt-1'>Authorized Signatory</p>
+            </div>
+         </div>
+         <div className="mt-4 p-2 border border-black rounded-md text-center">
+            <p className='font-bold'>This is a computer generated invoice</p>
+         </div>
+         <div className="mt-2 p-2 border border-dashed border-black rounded-md text-[8pt]">
+            <p>Payment can be done using IMPS, NEFT, or RTGS to the account details provided below:</p>
+            <p className='mt-1'><span className='font-bold w-28 inline-block'>Account Details</span></p>
+            <p><span className='font-bold w-28 inline-block'>Bank Name</span>: Axis Bank</p>
+            <p><span className='font-bold w-28 inline-block'>Merchant Name</span>: UNARCH & BUILD</p>
+            <p><span className='font-bold w-28 inline-block'>Account Number</span>: 924020003854618</p>
+            <p><span className='font-bold w-28 inline-block'>IFSC Code</span>: UTIB0000624</p>
+         </div>
       </footer>
     </div>
   );
