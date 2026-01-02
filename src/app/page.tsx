@@ -33,6 +33,7 @@ const recentBills: Partial<Bill>[] = [
 
 export default function BillSwiftPage() {
   const { toast } = useToast();
+  const [isClient, setIsClient] = React.useState(false);
   
   const form = useForm<Bill>({
     resolver: zodResolver(billSchema),
@@ -52,6 +53,7 @@ export default function BillSwiftPage() {
   });
 
   React.useEffect(() => {
+    setIsClient(true);
     form.setValue('billNo', `INV-${String(Date.now()).slice(-4)}`);
   }, [form]);
 
@@ -104,6 +106,10 @@ export default function BillSwiftPage() {
       description: `Bill ${billData.billNo} data loaded into the form.`,
     });
   };
+
+  if (!isClient) {
+    return null; // Or a loading spinner
+  }
 
   return (
     <FormProvider {...form}>
