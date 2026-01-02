@@ -22,6 +22,9 @@ export default function RootLayout({
       <body className="font-body antialiased">
         {children}
         <Toaster />
+        <footer className="no-print fixed bottom-0 left-0 w-full bg-card text-center p-2 text-xs text-muted-foreground">
+          Developed by Kumar Technologies
+        </footer>
       </body>
     </html>
   );
