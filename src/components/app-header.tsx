@@ -1,6 +1,6 @@
 'use client';
 
-import { FileText, Save, Printer, FileDown } from 'lucide-react';
+import { Save, Printer, FileDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -8,6 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import Image from 'next/image';
 
 interface AppHeaderProps {
   onSave: () => void;
@@ -19,7 +20,7 @@ export default function AppHeader({ onSave, onPrint, onDownload }: AppHeaderProp
   return (
     <header className="no-print flex h-16 items-center justify-between border-b bg-card px-6 shrink-0">
       <div className="flex items-center gap-3">
-        <FileText className="h-7 w-7 text-primary" />
+        <Image src="https://img.freepik.com/premium-vector/paper-people-check-mark-logo-vector-icon-illustration_7688-3628.jpg?semt=ais_hybrid&w=740&q=80" alt="BillSwift Logo" width={32} height={32} className="rounded-sm" data-ai-hint="logo checkmark" />
         <h1 className="text-xl font-bold tracking-tight text-foreground font-headline">
           BillSwift
         </h1>
