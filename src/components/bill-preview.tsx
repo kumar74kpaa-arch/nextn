@@ -41,6 +41,8 @@ export default function BillPreview({ bill }: BillPreviewProps) {
   
   const emptyRowsCount = items ? Math.max(0, 5 - items.length) : 5;
 
+  const printDate = new Date().toLocaleDateString('en-GB');
+
   return (
     <div id="bill-preview-content" className="printable-area bg-white rounded-none shadow-lg h-full max-w-4xl mx-auto p-8 text-[9pt] text-black font-verdana">
       <style jsx global>{`
@@ -50,8 +52,28 @@ export default function BillPreview({ bill }: BillPreviewProps) {
         .text-black {
           color: #000;
         }
+        .print-only {
+          display: none;
+        }
+        @media print {
+          .print-only {
+            display: block;
+          }
+          @page {
+            margin-top: 1cm;
+            margin-bottom: 1cm;
+          }
+        }
       `}</style>
       
+      <div className="print-only mb-4">
+        <div className="flex justify-between items-center">
+            <h1 className="text-lg font-bold">BillSwift</h1>
+            <p className="text-sm">{printDate}</p>
+        </div>
+        <hr className="my-2 border-black" />
+      </div>
+
       <header className="grid grid-cols-3 items-start mb-4">
         <div className="col-span-1">
           <Image src="https://i.ibb.co/tBS5TqH/logo.png" alt="Company Logo" width={96} height={96} data-ai-hint="logo building" />
