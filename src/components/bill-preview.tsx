@@ -109,9 +109,7 @@ export default function BillPreview({ bill }: BillPreviewProps) {
                 </tr>
                  <tr className="align-top h-48">
                     <td className="p-1 border-r border-black border-t border-black"></td>
-                    <td className="p-1 border-r border-black border-t border-black">
-                        <p className='font-bold'>Tax Amount: <span className='font-normal'>{totalAmountInWords}</span></p>
-                    </td>
+                    <td className="p-1 border-r border-black border-t border-black"></td>
                     <td className="p-1 border-r border-black border-t border-black"></td>
                     <td className="p-1 border-r border-black border-t border-black"></td>
                     <td className="p-1 border-r border-black border-t border-black"></td>
@@ -122,12 +120,9 @@ export default function BillPreview({ bill }: BillPreviewProps) {
       </section>
 
       <section className="flex justify-between mt-0">
-          <div className='w-1/2'>
-            <p className='font-bold text-[8pt] mt-2'>Invoice Description: <span className='font-normal'>{invoiceDescription}</span></p>
-            <div className='text-[8pt] mt-2'>
-              <p>We declare that this invoice shows the actual price of the goods</p>
-              <p>described and that all particulars are true and correct.</p>
-            </div>
+          <div className='w-1/2 text-[8pt]'>
+             <p className='font-bold mt-2'>Tax Amount: <span className='font-normal'>{totalAmountInWords?.replace('Rupees ', '').replace(' Only', '')}</span></p>
+             <p className='font-bold mt-1'>Total Amount: <span className='font-normal'>{totalAmountInWords}</span></p>
           </div>
         <div className="w-1/2 max-w-sm space-y-0 text-[8pt]">
              <div className="flex justify-between border-t border-black">
@@ -147,6 +142,17 @@ export default function BillPreview({ bill }: BillPreviewProps) {
                 <p className="p-1 font-bold">₹ {formatCurrency(totalAmount)}</p>
             </div>
         </div>
+      </section>
+      
+       <section className="flex justify-between mt-2">
+          <div className='w-1/2'>
+            <p className='font-bold text-[8pt] mt-2'>Invoice Description: <span className='font-normal'>{invoiceDescription}</span></p>
+            <div className='text-[8pt] mt-2'>
+              <p>We declare that this invoice shows the actual price of the goods</p>
+              <p>described and that all particulars are true and correct.</p>
+            </div>
+          </div>
+          <div></div>
       </section>
       
       <footer className="mt-4 text-[8pt]">
