@@ -1,9 +1,9 @@
 
 export type BillItem = {
   description: string;
-  hsnSac: string;
-  totalValue: number;
-  dueNowPercent: number;
+  hsnSac?: string;
+  totalValue?: number;
+  dueNowPercent?: number;
   dueNowAmount: number;
 };
 

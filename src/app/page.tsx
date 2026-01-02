@@ -16,8 +16,8 @@ import { numberToWords } from '@/lib/utils';
 const billItemSchema = z.object({
   description: z.string().min(1, "Description is required"),
   hsnSac: z.string().optional(),
-  totalValue: z.coerce.number().min(0),
-  dueNowPercent: z.coerce.number().min(0).max(100),
+  totalValue: z.coerce.number().optional(),
+  dueNowPercent: z.coerce.number().optional(),
   dueNowAmount: z.coerce.number().min(0),
 });
 

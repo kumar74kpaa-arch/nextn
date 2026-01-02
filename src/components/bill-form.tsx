@@ -34,24 +34,11 @@ interface BillFormProps {
 }
 
 export default function BillForm({ bills, onLoadBill }: BillFormProps) {
-  const { control, watch, setValue } = useFormContext<Bill>();
+  const { control } = useFormContext<Bill>();
   const { fields, append, remove } = useFieldArray({
     control,
     name: "items",
   });
-
-  const items = watch("items");
-
-  const handleItemChange = (index: number) => {
-    const item = items[index];
-    const totalValue = typeof item.totalValue === 'number' ? item.totalValue : 0;
-    const dueNowPercent = typeof item.dueNowPercent === 'number' ? item.dueNowPercent : 0;
-    
-    if (isNaN(totalValue) || isNaN(dueNowPercent)) return;
-    
-    const dueNowAmount = (totalValue * dueNowPercent) / 100;
-    setValue(`items.${index}.dueNowAmount`, dueNowAmount, { shouldValidate: true });
-  }
 
   return (
     <div className="space-y-6">
@@ -309,10 +296,7 @@ export default function BillForm({ bills, onLoadBill }: BillFormProps) {
                     <FormItem>
                         <FormLabel>Total Value</FormLabel>
                         <FormControl>
-                        <Input type="number" placeholder="0.00" {...field} onChange={(e) => {
-                          field.onChange(e.target.valueAsNumber);
-                          handleItemChange(index);
-                        }}/>
+                        <Input type="number" placeholder="0.00" {...field} onChange={(e) => field.onChange(e.target.valueAsNumber)} />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -325,10 +309,7 @@ export default function BillForm({ bills, onLoadBill }: BillFormProps) {
                     <FormItem>
                         <FormLabel>Due Now (%)</FormLabel>
                         <FormControl>
-                        <Input type="number" placeholder="100" {...field} onChange={(e) => {
-                          field.onChange(e.target.valueAsNumber);
-                          handleItemChange(index);
-                        }}/>
+                        <Input type="number" placeholder="100" {...field} onChange={(e) => field.onChange(e.target.valueAsNumber)} />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -341,7 +322,7 @@ export default function BillForm({ bills, onLoadBill }: BillFormProps) {
                     <FormItem>
                         <FormLabel>Due Now Amt</FormLabel>
                         <FormControl>
-                         <Input readOnly value={field.value.toFixed(2)} className="bg-muted/60 font-medium" />
+                         <Input type="number" placeholder="0.00" {...field} onChange={(e) => field.onChange(e.target.valueAsNumber)} />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -511,5 +492,3 @@ export default function BillForm({ bills, onLoadBill }: BillFormProps) {
     </div>
   );
 }
-
-    
