@@ -18,7 +18,7 @@ const billItemSchema = z.object({
   hsnSac: z.string().optional(),
   totalValue: z.coerce.number().optional(),
   dueNowPercent: z.coerce.number().optional(),
-  dueNowAmount: z.coerce.number().min(0),
+  dueNowAmount: z.coerce.number().min(0, "Amount must be positive"),
 });
 
 const billSchema = z.object({
@@ -79,8 +79,6 @@ export default function BillSwiftPage() {
         { 
           description: 'Towards Contractual Works', 
           hsnSac: '995464', 
-          totalValue: 1266838.00, 
-          dueNowPercent: 100, 
           dueNowAmount: 1266838.00 
         }
       ],
@@ -103,21 +101,18 @@ export default function BillSwiftPage() {
 
 
   const watchedValues = form.watch();
-  const { amount, cgstPercent, sgstPercent } = watchedValues;
+  const { amount, cgstPercent, sgstPercent, items } = watchedValues;
 
   React.useEffect(() => {
-    // This logic is now disabled to allow manual subtotal entry.
-    // The subtotal is calculated based on items, but manual override is possible.
-    /*
-    const sub = watchedValues.items.reduce((acc, item) => {
-        const totalValue = typeof item.totalValue === 'number' ? item.totalValue : 0;
-        const dueNowPercent = typeof item.dueNowPercent === 'number' ? item.dueNowPercent : 0;
-        const dueNowAmount = (totalValue * dueNowPercent) / 100;
-        return acc + dueNowAmount;
-    }, 0);
-    form.setValue('amount', sub);
-    */
-  }, [watchedValues.items, form]);
+    const subtotalFromItems = items.reduce((acc, item) => acc + (item.dueNowAmount || 0), 0);
+    if(subtotalFromItems !== amount) {
+        // This effect will update the main 'amount' field if the items' amounts change.
+        // But it allows manual override of the 'amount' field as well.
+        // A more complex implementation could decide which one is the source of truth.
+        // For now, we sum up items.
+        form.setValue('amount', subtotalFromItems);
+    }
+  }, [items, form]);
 
 
   React.useEffect(() => {
@@ -133,8 +128,8 @@ export default function BillSwiftPage() {
     form.setValue('cgstAmount', cgst, { shouldValidate: true });
     form.setValue('sgstAmount', sgst, { shouldValidate: true });
     form.setValue('totalAmount', total, { shouldValidate: true });
-    form.setValue('taxAmountInWords', `${numberToWords(totalTax)}`, { shouldValidate: true });
-    form.setValue('totalAmountInWords', `Rupees ${numberToWords(total)} Only`, { shouldValidate: true });
+    form.setValue('taxAmountInWords', totalTax > 0 ? `${numberToWords(totalTax)}` : '', { shouldValidate: true });
+    form.setValue('totalAmountInWords', total > 0 ? `Rupees ${numberToWords(total)} Only`: '', { shouldValidate: true });
 
   }, [amount, cgstPercent, sgstPercent, form]);
 
