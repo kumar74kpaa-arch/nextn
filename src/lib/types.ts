@@ -8,6 +8,11 @@ export type BillItem = {
 };
 
 export type Bill = {
+  companyName?: string;
+  companyAddress?: string;
+  companyGstin?: string;
+  companyState?: string;
+  companyEmail?: string;
   billNo: string;
   date: string;
   billTo: string;

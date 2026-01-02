@@ -8,7 +8,12 @@ interface BillPreviewProps {
 }
 
 export default function BillPreview({ bill }: BillPreviewProps) {
-  const { 
+  const {
+    companyName,
+    companyAddress,
+    companyGstin,
+    companyState,
+    companyEmail,
     billTo, 
     shipTo, 
     billNo, 
@@ -49,15 +54,14 @@ export default function BillPreview({ bill }: BillPreviewProps) {
       
       <header className="grid grid-cols-3 items-start mb-4">
         <div className="col-span-1">
-          <Image src="https://i.ibb.co/tBS5TqH/logo.png" alt="UNARCH & BUILD Logo" width={96} height={96} data-ai-hint="logo building" />
+          <Image src="https://i.ibb.co/tBS5TqH/logo.png" alt="Company Logo" width={96} height={96} data-ai-hint="logo building" />
         </div>
         <div className="col-span-2 text-left -ml-16">
-          <h2 className="font-bold text-sm">UNARCH & BUILD</h2>
-          <p className='text-[8pt] leading-tight'>104, OC-07, Orange County Amisha</p>
-          <p className='text-[8pt] leading-tight'>Khand-1, Ghaziabad, UP-201014</p>
-          <p className='text-[8pt] leading-tight'>GSTIN: 09DWTPS 5635F1ZV State</p>
-          <p className='text-[8pt] leading-tight'>: Uttar Pradesh, Code : 09</p>
-          <p className='text-[8pt] leading-tight'>amitsainii@gmail.com</p>
+          <h2 className="font-bold text-sm">{companyName}</h2>
+          <p className='text-[8pt] leading-tight whitespace-pre-wrap'>{companyAddress}</p>
+          <p className='text-[8pt] leading-tight'>GSTIN: {companyGstin}</p>
+          <p className='text-[8pt] leading-tight'>State: {companyState}</p>
+          <p className='text-[8pt] leading-tight'>{companyEmail}</p>
         </div>
       </header>
       
@@ -181,7 +185,7 @@ export default function BillPreview({ bill }: BillPreviewProps) {
          <div className='grid grid-cols-2'>
             <div></div>
             <div className='text-center'>
-              <p>For UNARCH & BUILD</p>
+              <p>For {companyName}</p>
               <div className="h-12"></div>
               <p className='border-t border-black pt-1'>Authorized Signatory</p>
             </div>

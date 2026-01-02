@@ -53,6 +53,82 @@ export default function BillForm({ bills, onLoadBill }: BillFormProps) {
     <div className="space-y-6">
       <Card>
         <CardHeader>
+          <CardTitle>Company Details</CardTitle>
+          <CardDescription>Enter your company's information.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <FormField
+            control={control}
+            name="companyName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Company Name</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={control}
+            name="companyAddress"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Company Address</FormLabel>
+                <FormControl>
+                  <Textarea {...field} rows={4} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <FormField
+              control={control}
+              name="companyGstin"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Company GSTIN</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={control}
+              name="companyState"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>State & Code</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+           <FormField
+              control={control}
+              name="companyEmail"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input type="email" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+        </CardContent>
+      </Card>
+      
+      <Card>
+        <CardHeader>
           <CardTitle>Customer Details</CardTitle>
           <CardDescription>Enter the billing and shipping information.</CardDescription>
         </CardHeader>

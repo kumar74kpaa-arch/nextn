@@ -22,6 +22,11 @@ const billItemSchema = z.object({
 });
 
 const billSchema = z.object({
+  companyName: z.string().optional(),
+  companyAddress: z.string().optional(),
+  companyGstin: z.string().optional(),
+  companyState: z.string().optional(),
+  companyEmail: z.string().optional(),
   billNo: z.string().min(1, 'Bill No. is required'),
   date: z.string().min(1, 'Date is required'),
   billTo: z.string().min(1, 'This field is required'),
@@ -57,6 +62,11 @@ export default function BillSwiftPage() {
     resolver: zodResolver(billSchema),
     mode: 'onBlur',
     defaultValues: {
+      companyName: 'UNARCH & BUILD',
+      companyAddress: '104, OC-07, Orange County Amisha\nKhand-1, Ghaziabad, UP-201014',
+      companyGstin: '09DWTPS 5635F1ZV',
+      companyState: 'Uttar Pradesh, Code : 09',
+      companyEmail: 'amitsainii@gmail.com',
       billNo: '',
       date: new Date().toISOString().split('T')[0],
       billTo: 'Amba Switchgears\nLand No- 152, Junction road\nIndustrial area, UP- 203131',
@@ -96,14 +106,17 @@ export default function BillSwiftPage() {
   const { amount, cgstPercent, sgstPercent } = watchedValues;
 
   React.useEffect(() => {
+    // This logic is now disabled to allow manual subtotal entry.
+    // The subtotal is calculated based on items, but manual override is possible.
+    /*
     const sub = watchedValues.items.reduce((acc, item) => {
         const totalValue = typeof item.totalValue === 'number' ? item.totalValue : 0;
         const dueNowPercent = typeof item.dueNowPercent === 'number' ? item.dueNowPercent : 0;
         const dueNowAmount = (totalValue * dueNowPercent) / 100;
         return acc + dueNowAmount;
     }, 0);
-    // This calculation is for reference, but we are allowing manual override
-    // form.setValue('amount', sub);
+    form.setValue('amount', sub);
+    */
   }, [watchedValues.items, form]);
 
 
