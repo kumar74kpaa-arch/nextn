@@ -26,6 +26,7 @@ import { Textarea } from '@/components/ui/textarea';
 import type { Bill } from '@/lib/types';
 import { Button } from './ui/button';
 import { Plus, Trash2 } from 'lucide-react';
+import React from 'react';
 
 interface BillFormProps {
     bills: Partial<Bill>[];
@@ -41,10 +42,13 @@ export default function BillForm({ bills, onLoadBill }: BillFormProps) {
 
   const items = watch("items");
 
-  const handleItemChange = (index: number, field: 'totalValue' | 'dueNowPercent', value: number) => {
-    const totalValue = field === 'totalValue' ? value : items[index].totalValue;
-    const dueNowPercent = field === 'dueNowPercent' ? value : items[index].dueNowPercent;
+  const handleItemChange = (index: number) => {
+    const item = items[index];
+    const totalValue = typeof item.totalValue === 'number' ? item.totalValue : 0;
+    const dueNowPercent = typeof item.dueNowPercent === 'number' ? item.dueNowPercent : 0;
+    
     if (isNaN(totalValue) || isNaN(dueNowPercent)) return;
+    
     const dueNowAmount = (totalValue * dueNowPercent) / 100;
     setValue(`items.${index}.dueNowAmount`, dueNowAmount, { shouldValidate: true });
   }
@@ -307,7 +311,7 @@ export default function BillForm({ bills, onLoadBill }: BillFormProps) {
                         <FormControl>
                         <Input type="number" placeholder="0.00" {...field} onChange={(e) => {
                           field.onChange(e.target.valueAsNumber);
-                          handleItemChange(index, 'totalValue', e.target.valueAsNumber);
+                          handleItemChange(index);
                         }}/>
                         </FormControl>
                         <FormMessage />
@@ -323,7 +327,7 @@ export default function BillForm({ bills, onLoadBill }: BillFormProps) {
                         <FormControl>
                         <Input type="number" placeholder="100" {...field} onChange={(e) => {
                           field.onChange(e.target.valueAsNumber);
-                          handleItemChange(index, 'dueNowPercent', e.target.valueAsNumber);
+                          handleItemChange(index);
                         }}/>
                         </FormControl>
                         <FormMessage />
@@ -507,3 +511,5 @@ export default function BillForm({ bills, onLoadBill }: BillFormProps) {
     </div>
   );
 }
+
+    
