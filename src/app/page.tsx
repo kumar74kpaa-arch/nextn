@@ -38,7 +38,7 @@ export default function BillSwiftPage() {
     resolver: zodResolver(billSchema),
     mode: 'onBlur',
     defaultValues: {
-      billNo: `INV-${String(Date.now()).slice(-4)}`,
+      billNo: '',
       date: new Date().toISOString().split('T')[0],
       billTo: '',
       shipTo: '',
@@ -50,6 +50,13 @@ export default function BillSwiftPage() {
       totalAmount: 0,
     },
   });
+
+  React.useEffect(() => {
+    if (!form.getValues('billNo')) {
+        form.setValue('billNo', `INV-${String(Date.now()).slice(-4)}`);
+    }
+  }, [form]);
+
 
   const watchedValues = form.watch();
   const { amount, gstPercent } = watchedValues;
