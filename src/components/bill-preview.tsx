@@ -62,28 +62,36 @@ export default function BillPreview({ bill }: BillPreviewProps) {
         <h1 className="text-base font-bold underline">Tax Invoice</h1>
       </div>
 
-      <div className="grid grid-cols-2 mb-2 text-[8pt]">
-          <div>
-              <div className='grid grid-cols-2'>
-                  <div className='font-bold'>Bill To</div>
-                  <div>
-                      <p className="whitespace-pre-wrap leading-tight">{billTo}</p>
-                      <p className="leading-tight">GSTIN: {gstin || 'N/A'}</p>
-                      {workOrderNo && <p className="leading-tight">Work Order: {workOrderNo}</p>}
-                  </div>
+      <div className="grid grid-cols-3 mb-2 text-[8pt]">
+          <div className='col-span-2 grid grid-cols-2'>
+              <div>
+                  <p className='font-bold'>Bill To</p>
+                  <p className="whitespace-pre-wrap leading-tight">{billTo}</p>
+                  <p className="leading-tight">GSTIN: {gstin || 'N/A'}</p>
+                  {workOrderNo && <p className="leading-tight">Work Order: {workOrderNo}</p>}
               </div>
-              <div className='grid grid-cols-2 mt-2'>
-                  <div className='font-bold'>Ship To</div>
-                  <div>
-                    <p className="whitespace-pre-wrap leading-tight">{shipTo}</p>
-                  </div>
+              <div>
+                  <p className='font-bold'>Ship To</p>
+                  <p className="whitespace-pre-wrap leading-tight">{shipTo}</p>
               </div>
           </div>
           <div className='text-right'>
-              <p className='flex justify-end'><span className='w-32 font-bold text-left'>Invoice No.</span>: {billNo}</p>
-              <p className='flex justify-end'><span className='w-32 font-bold text-left'>Date</span>: {date ? new Date(date + 'T00:00:00').toLocaleDateString('en-GB') : 'N/A'}</p>
-              <p className='flex justify-end mt-2'><span className='w-32 font-bold text-left'>Place of Supply</span>: {placeOfSupply}</p>
-              <p className='flex justify-end'><span className='w-32 font-bold text-left'>State</span>: Delhi, Code: {stateCode}</p>
+              <div className='flex justify-end'>
+                  <span className='w-24 font-bold text-left'>Invoice No.</span>
+                  <span>{billNo}</span>
+              </div>
+              <div className='flex justify-end'>
+                  <span className='w-24 font-bold text-left'>Date</span>
+                  <span>{date ? new Date(date + 'T00:00:00').toLocaleDateString('en-GB') : 'N/A'}</span>
+              </div>
+               <div className='flex justify-end mt-2'>
+                  <span className='w-24 font-bold text-left'>Place of Supply</span>
+                  <span>{placeOfSupply}</span>
+              </div>
+              <div className='flex justify-end'>
+                  <span className='w-24 font-bold text-left'>State</span>
+                  <span>Delhi, Code: {stateCode}</span>
+              </div>
           </div>
       </div>
 
