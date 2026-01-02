@@ -24,5 +24,6 @@ export type Bill = {
   cgstAmount: number;
   sgstAmount: number;
   totalAmount: number;
+  taxAmountInWords?: string;
   totalAmountInWords?: string;
 };

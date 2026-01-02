@@ -23,6 +23,7 @@ export default function BillPreview({ bill }: BillPreviewProps) {
     totalAmount,
     items,
     invoiceDescription,
+    taxAmountInWords,
     totalAmountInWords,
     placeOfSupply,
     stateCode
@@ -142,7 +143,7 @@ export default function BillPreview({ bill }: BillPreviewProps) {
 
       <section className="flex justify-between mt-0">
           <div className='w-1/2 text-[8pt]'>
-             <p className='font-bold mt-2'>Tax Amount: <span className='font-normal'>{totalAmountInWords?.replace('Rupees ', '').replace(' Only', '')}</span></p>
+             <p className='font-bold mt-2'>Tax Amount: <span className='font-normal'>{taxAmountInWords}</span></p>
              <p className='font-bold mt-1'>Total Amount: <span className='font-normal'>{totalAmountInWords}</span></p>
           </div>
         <div className="w-1/2 max-w-sm space-y-0 text-[8pt]">

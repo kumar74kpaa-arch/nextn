@@ -38,6 +38,7 @@ const billSchema = z.object({
   cgstAmount: z.number(),
   sgstAmount: z.number(),
   totalAmount: z.number(),
+  taxAmountInWords: z.string().optional(),
   totalAmountInWords: z.string().optional(),
 });
 
@@ -80,6 +81,7 @@ export default function BillSwiftPage() {
       cgstAmount: 0,
       sgstAmount: 0,
       totalAmount: 0,
+      taxAmountInWords: '',
       totalAmountInWords: '',
     },
   });
@@ -113,10 +115,12 @@ export default function BillSwiftPage() {
     const cgst = (parsedSubtotal * parsedCgstPercent) / 100;
     const sgst = (parsedSubtotal * parsedSgstPercent) / 100;
     const total = parsedSubtotal + cgst + sgst;
+    const totalTax = cgst + sgst;
     
     form.setValue('cgstAmount', cgst, { shouldValidate: true });
     form.setValue('sgstAmount', sgst, { shouldValidate: true });
     form.setValue('totalAmount', total, { shouldValidate: true });
+    form.setValue('taxAmountInWords', `${numberToWords(totalTax)}`, { shouldValidate: true });
     form.setValue('totalAmountInWords', `Rupees ${numberToWords(total)} Only`, { shouldValidate: true });
 
   }, [amount, cgstPercent, sgstPercent, form]);
