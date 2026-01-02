@@ -108,11 +108,10 @@ export default function BillSwiftPage() {
     if(subtotalFromItems !== amount) {
         // This effect will update the main 'amount' field if the items' amounts change.
         // But it allows manual override of the 'amount' field as well.
-        // A more complex implementation could decide which one is the source of truth.
         // For now, we sum up items.
         form.setValue('amount', subtotalFromItems);
     }
-  }, [items, form]);
+  }, [items, amount, form]);
 
 
   React.useEffect(() => {
@@ -147,11 +146,38 @@ export default function BillSwiftPage() {
   });
 
   const handleDownload = (format: 'PDF' | 'DOCX') => {
-    toast({
-      title: `Download ${format}`,
-      description: `Generating ${format} file... (This is a demo)`,
-    });
-    // In a real app, you'd use a library like jsPDF or docx to generate the file.
+    if (format === 'PDF') {
+      handlePrint();
+    } else if (format === 'DOCX') {
+      const billPreviewContent = document.getElementById('bill-preview-content')?.innerHTML;
+      if (!billPreviewContent) {
+        toast({
+          variant: 'destructive',
+          title: 'Error',
+          description: 'Could not find bill content to download.',
+        });
+        return;
+      }
+      const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' "+
+            "xmlns:w='urn:schemas-microsoft-com:office:word' "+
+            "xmlns='http://www.w3.org/TR/REC-html40'>"+
+            "<head><meta charset='utf-8'><title>Export HTML to Word Document</title></head><body>";
+      const footer = "</body></html>";
+      const sourceHTML = header+billPreviewContent+footer;
+      
+      const source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
+      const fileDownload = document.createElement("a");
+      document.body.appendChild(fileDownload);
+      fileDownload.href = source;
+      fileDownload.download = `${form.getValues('billNo') || 'invoice'}.doc`;
+      fileDownload.click();
+      document.body.removeChild(fileDownload);
+
+      toast({
+        title: "DOCX Downloaded",
+        description: "The bill has been downloaded as a Word document.",
+      });
+    }
   };
 
   const loadBill = (billData: Partial<Bill>) => {
