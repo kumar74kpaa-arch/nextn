@@ -76,22 +76,22 @@ export default function BillPreview({ bill }: BillPreviewProps) {
               <p className='font-bold'>Ship To</p>
               <p className="whitespace-pre-wrap leading-tight">{shipTo}</p>
           </div>
-          <div className='col-span-1 text-right'>
-              <div className='flex justify-end'>
-                  <span className='w-24 font-bold text-left'>Invoice No.</span>
-                  <span>{billNo}</span>
+          <div className='col-span-1 text-left'>
+              <div className='flex'>
+                  <span className='w-24 font-bold'>Invoice No.</span>
+                  <span>: {billNo}</span>
               </div>
-              <div className='flex justify-end'>
-                  <span className='w-24 font-bold text-left'>Date</span>
-                  <span>{date ? new Date(date + 'T00:00:00').toLocaleDateString('en-GB') : 'N/A'}</span>
+              <div className='flex'>
+                  <span className='w-24 font-bold'>Date</span>
+                  <span>: {date ? new Date(date + 'T00:00:00').toLocaleDateString('en-GB') : 'N/A'}</span>
               </div>
-               <div className='flex justify-end mt-2'>
-                  <span className='w-24 font-bold text-left'>Place of Supply</span>
-                  <span>{placeOfSupply}</span>
+               <div className='flex mt-2'>
+                  <span className='w-24 font-bold'>Place of Supply</span>
+                  <span>: {placeOfSupply}</span>
               </div>
-              <div className='flex justify-end'>
-                  <span className='w-24 font-bold text-left'>State</span>
-                  <span>Delhi, Code: {stateCode}</span>
+              <div className='flex'>
+                  <span className='w-24 font-bold'>State</span>
+                  <span>: Delhi, Code: {stateCode}</span>
               </div>
           </div>
       </div>
