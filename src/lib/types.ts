@@ -1,3 +1,12 @@
+
+export type BillItem = {
+  description: string;
+  hsnSac: string;
+  totalValue: number;
+  dueNowPercent: number;
+  dueNowAmount: number;
+};
+
 export type Bill = {
   billNo: string;
   date: string;
@@ -7,10 +16,9 @@ export type Bill = {
   stateCode?: string;
   gstin?: string;
   workOrderNo?: string;
-  itemDescription: string;
+  items: BillItem[];
   invoiceDescription?: string;
-  hsnSac?: string;
-  amount: number;
+  amount: number; // This will be the subtotal (sum of dueNowAmount from items)
   cgstPercent: number;
   sgstPercent: number;
   cgstAmount: number;

@@ -1,7 +1,8 @@
+
 'use client';
 
 import * as React from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
+import { useForm, FormProvider, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
@@ -12,6 +13,14 @@ import BillPreview from '@/components/bill-preview';
 import { useToast } from '@/hooks/use-toast';
 import { numberToWords } from '@/lib/utils';
 
+const billItemSchema = z.object({
+  description: z.string().min(1, "Description is required"),
+  hsnSac: z.string().optional(),
+  totalValue: z.coerce.number().min(0),
+  dueNowPercent: z.coerce.number().min(0).max(100),
+  dueNowAmount: z.coerce.number().min(0),
+});
+
 const billSchema = z.object({
   billNo: z.string().min(1, 'Bill No. is required'),
   date: z.string().min(1, 'Date is required'),
@@ -21,9 +30,8 @@ const billSchema = z.object({
   stateCode: z.string().optional(),
   gstin: z.string().optional(),
   workOrderNo: z.string().optional(),
-  itemDescription: z.string().min(1, 'Item description is required'),
+  items: z.array(billItemSchema).min(1, "At least one item is required"),
   invoiceDescription: z.string().optional(),
-  hsnSac: z.string().optional(),
   amount: z.coerce.number().positive({ message: 'Amount must be greater than 0' }),
   cgstPercent: z.coerce.number().min(0).max(100),
   sgstPercent: z.coerce.number().min(0).max(100),
@@ -56,9 +64,16 @@ export default function BillSwiftPage() {
       stateCode: '09',
       gstin: '09ABZFA98281Z0',
       workOrderNo: '',
-      itemDescription: 'Towards Contractual Works',
+      items: [
+        { 
+          description: 'Towards Contractual Works', 
+          hsnSac: '995464', 
+          totalValue: 1266838.00, 
+          dueNowPercent: 100, 
+          dueNowAmount: 1266838.00 
+        }
+      ],
       invoiceDescription: 'Towards Contractual Works',
-      hsnSac: '995464',
       amount: 1266838.00,
       cgstPercent: 9,
       sgstPercent: 9,
@@ -76,23 +91,30 @@ export default function BillSwiftPage() {
 
 
   const watchedValues = form.watch();
-  const { amount, cgstPercent, sgstPercent } = watchedValues;
+  const { items, cgstPercent, sgstPercent } = watchedValues;
 
   React.useEffect(() => {
-    const parsedAmount = typeof amount === 'number' ? amount : 0;
+    const subtotal = items.reduce((acc, item) => {
+        const totalValue = typeof item.totalValue === 'number' ? item.totalValue : 0;
+        const dueNowPercent = typeof item.dueNowPercent === 'number' ? item.dueNowPercent : 0;
+        const dueNowAmount = (totalValue * dueNowPercent) / 100;
+        return acc + dueNowAmount;
+    }, 0);
+
     const parsedCgstPercent = typeof cgstPercent === 'number' ? cgstPercent : 0;
     const parsedSgstPercent = typeof sgstPercent === 'number' ? sgstPercent : 0;
     
-    const cgst = (parsedAmount * parsedCgstPercent) / 100;
-    const sgst = (parsedAmount * parsedSgstPercent) / 100;
-    const total = parsedAmount + cgst + sgst;
+    const cgst = (subtotal * parsedCgstPercent) / 100;
+    const sgst = (subtotal * parsedSgstPercent) / 100;
+    const total = subtotal + cgst + sgst;
     
+    form.setValue('amount', subtotal, { shouldValidate: true });
     form.setValue('cgstAmount', cgst, { shouldValidate: true });
     form.setValue('sgstAmount', sgst, { shouldValidate: true });
     form.setValue('totalAmount', total, { shouldValidate: true });
     form.setValue('totalAmountInWords', `Rupees ${numberToWords(total)} Only`, { shouldValidate: true });
 
-  }, [amount, cgstPercent, sgstPercent, form]);
+  }, [items, cgstPercent, sgstPercent, form]);
 
   const handlePrint = () => {
     window.print();
@@ -116,11 +138,21 @@ export default function BillSwiftPage() {
   };
 
   const loadBill = (billData: Partial<Bill>) => {
-    // A real implementation would fetch the full bill from a database
+    // This function would need to be updated to handle multiple items if the mock data supported it.
+    // For now, it will reset with a single item structure.
     form.reset({
       ...form.getValues(), // keep current values for fields not in billData
-      ...billData,
-      amount: billData.totalAmount ? billData.totalAmount / 1.18 : 0, // Mock reverse calculation
+      billNo: billData.billNo,
+      date: billData.date,
+      billTo: billData.billTo,
+      totalAmount: billData.totalAmount,
+      items: [{
+        description: 'Loaded Item',
+        hsnSac: '',
+        totalValue: billData.totalAmount ? billData.totalAmount / 1.18 : 0,
+        dueNowPercent: 100,
+        dueNowAmount: billData.totalAmount ? billData.totalAmount / 1.18 : 0,
+      }],
       cgstPercent: 9,
       sgstPercent: 9,
     });

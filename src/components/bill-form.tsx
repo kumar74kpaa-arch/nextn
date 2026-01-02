@@ -1,5 +1,6 @@
+
 'use client';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useFieldArray } from 'react-hook-form';
 import {
   Card,
   CardContent,
@@ -24,6 +25,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import type { Bill } from '@/lib/types';
 import { Button } from './ui/button';
+import { Plus, Trash2 } from 'lucide-react';
 
 interface BillFormProps {
     bills: Partial<Bill>[];
@@ -31,7 +33,20 @@ interface BillFormProps {
 }
 
 export default function BillForm({ bills, onLoadBill }: BillFormProps) {
-  const { control, getValues } = useFormContext<Bill>();
+  const { control, watch, setValue } = useFormContext<Bill>();
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "items",
+  });
+
+  const items = watch("items");
+
+  const handleItemChange = (index: number, field: 'totalValue' | 'dueNowPercent', value: number) => {
+    const totalValue = field === 'totalValue' ? value : items[index].totalValue;
+    const dueNowPercent = field === 'dueNowPercent' ? value : items[index].dueNowPercent;
+    const dueNowAmount = (totalValue * dueNowPercent) / 100;
+    setValue(`items.${index}.dueNowAmount`, dueNowAmount, { shouldValidate: true });
+  }
 
   return (
     <div className="space-y-6">
@@ -160,35 +175,108 @@ export default function BillForm({ bills, onLoadBill }: BillFormProps) {
        <Card>
         <CardHeader>
             <CardTitle>Item Details</CardTitle>
-            <CardDescription>Describe the item being billed.</CardDescription>
+            <CardDescription>Describe the items being billed.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-             <FormField
-                control={control}
-                name="itemDescription"
-                render={({ field }) => (
-                <FormItem>
-                    <FormLabel>Item Description</FormLabel>
-                    <FormControl>
-                    <Textarea placeholder="e.g., Towards Contractual Works" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                </FormItem>
-                )}
-            />
-             <FormField
-                control={control}
-                name="hsnSac"
-                render={({ field }) => (
-                <FormItem>
-                    <FormLabel>HSN/SAC</FormLabel>
-                    <FormControl>
-                    <Input placeholder="e.g., 995464" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                </FormItem>
-                )}
-            />
+            {fields.map((field, index) => (
+              <div key={field.id} className="p-4 border rounded-md space-y-4 relative">
+                 <div className='flex justify-between items-center'>
+                    <p className='font-medium'>Item {index + 1}</p>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="text-destructive hover:bg-destructive/10 h-8 w-8"
+                      onClick={() => remove(index)}
+                      disabled={fields.length <= 1}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                 </div>
+
+                <FormField
+                  control={control}
+                  name={`items.${index}.description`}
+                  render={({ field }) => (
+                  <FormItem>
+                      <FormLabel>Item Description</FormLabel>
+                      <FormControl>
+                      <Textarea placeholder="e.g., Towards Contractual Works" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                  </FormItem>
+                  )}
+                />
+                <FormField
+                  control={control}
+                  name={`items.${index}.hsnSac`}
+                  render={({ field }) => (
+                  <FormItem>
+                      <FormLabel>HSN/SAC</FormLabel>
+                      <FormControl>
+                      <Input placeholder="e.g., 995464" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                  </FormItem>
+                  )}
+                />
+                <div className='grid grid-cols-3 gap-4'>
+                  <FormField
+                    control={control}
+                    name={`items.${index}.totalValue`}
+                    render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Total Value</FormLabel>
+                        <FormControl>
+                        <Input type="number" placeholder="0.00" {...field} onChange={(e) => {
+                          field.onChange(e);
+                          handleItemChange(index, 'totalValue', e.target.valueAsNumber);
+                        }}/>
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={control}
+                    name={`items.${index}.dueNowPercent`}
+                    render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Due Now (%)</FormLabel>
+                        <FormControl>
+                        <Input type="number" placeholder="100" {...field} onChange={(e) => {
+                          field.onChange(e);
+                          handleItemChange(index, 'dueNowPercent', e.target.valueAsNumber);
+                        }}/>
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                    )}
+                  />
+                   <FormField
+                    control={control}
+                    name={`items.${index}.dueNowAmount`}
+                    render={({ field }) => (
+                    <FormItem>
+                        <FormLabel>Due Now Amt</FormLabel>
+                        <FormControl>
+                         <Input readOnly value={field.value.toFixed(2)} className="bg-muted/60 font-medium" />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+            ))}
+             <Button
+                type="button"
+                variant="outline"
+                onClick={() => append({ description: '', hsnSac: '', totalValue: 0, dueNowPercent: 100, dueNowAmount: 0 })}
+              >
+                <Plus className="mr-2 h-4 w-4" />
+                Add Item
+              </Button>
         </CardContent>
       </Card>
 
@@ -206,7 +294,7 @@ export default function BillForm({ bills, onLoadBill }: BillFormProps) {
                     <FormItem>
                         <FormLabel>Subtotal Amount</FormLabel>
                         <FormControl>
-                        <Input type="number" placeholder="0.00" {...field} />
+                        <Input readOnly value={field.value.toFixed(2)} className="bg-muted/60 font-medium" />
                         </FormControl>
                         <FormMessage />
                     </FormItem>

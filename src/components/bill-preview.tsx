@@ -1,3 +1,4 @@
+
 'use client';
 import type { Bill } from '@/lib/types';
 import Image from 'next/image';
@@ -20,9 +21,8 @@ export default function BillPreview({ bill }: BillPreviewProps) {
     cgstAmount,
     sgstAmount,
     totalAmount,
-    itemDescription,
+    items,
     invoiceDescription,
-    hsnSac,
     totalAmountInWords,
     placeOfSupply,
     stateCode
@@ -32,6 +32,8 @@ export default function BillPreview({ bill }: BillPreviewProps) {
     if (typeof value !== 'number') return '0.00';
     return value.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
+  
+  const emptyRowsCount = items ? Math.max(0, 8 - items.length) : 8;
 
   return (
     <div id="bill-preview-content" className="printable-area bg-white rounded-none shadow-lg h-full max-w-4xl mx-auto p-8 text-[9pt] text-black font-verdana">
@@ -62,8 +64,8 @@ export default function BillPreview({ bill }: BillPreviewProps) {
         <h1 className="text-base font-bold underline">Tax Invoice</h1>
       </div>
 
-      <div className="grid grid-cols-3 mb-2 text-[8pt]">
-          <div className='col-span-2 grid grid-cols-2'>
+      <div className="grid grid-cols-2 mb-2 text-[8pt]">
+          <div className='col-span-1 grid grid-cols-2'>
               <div>
                   <p className='font-bold'>Bill To</p>
                   <p className="whitespace-pre-wrap leading-tight">{billTo}</p>
@@ -108,15 +110,27 @@ export default function BillPreview({ bill }: BillPreviewProps) {
                 </tr>
             </thead>
             <tbody>
-                <tr className="align-top">
-                    <td className="p-1 text-center border-r border-black">1</td>
-                    <td className="p-1 border-r border-black">{itemDescription}</td>
-                    <td className="p-1 text-center border-r border-black">{hsnSac}</td>
-                    <td className="p-1 text-right border-r border-black"></td>
-                    <td className="p-1 text-right border-r border-black"></td>
-                    <td className="p-1 text-right">{formatCurrency(amount)}</td>
-                </tr>
-                 <tr className="align-top h-48">
+                {items?.map((item, index) => (
+                    <tr className="align-top" key={index}>
+                        <td className="p-1 text-center border-r border-black">{index + 1}</td>
+                        <td className="p-1 border-r border-black whitespace-pre-wrap">{item.description}</td>
+                        <td className="p-1 text-center border-r border-black">{item.hsnSac}</td>
+                        <td className="p-1 text-right border-r border-black">{formatCurrency(item.totalValue)}</td>
+                        <td className="p-1 text-right border-r border-black">{item.dueNowPercent.toFixed(2)}%</td>
+                        <td className="p-1 text-right">{formatCurrency(item.dueNowAmount)}</td>
+                    </tr>
+                ))}
+                {Array.from({ length: emptyRowsCount }).map((_, index) => (
+                  <tr className="align-top h-6" key={`empty-${index}`}>
+                    <td className="p-1 border-r border-black"></td>
+                    <td className="p-1 border-r border-black"></td>
+                    <td className="p-1 border-r border-black"></td>
+                    <td className="p-1 border-r border-black"></td>
+                    <td className="p-1 border-r border-black"></td>
+                    <td className="p-1"></td>
+                  </tr>
+                ))}
+                 <tr className="align-top h-auto">
                     <td className="p-1 border-r border-black border-t border-black"></td>
                     <td className="p-1 border-r border-black border-t border-black"></td>
                     <td className="p-1 border-r border-black border-t border-black"></td>
