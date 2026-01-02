@@ -52,9 +52,7 @@ export default function BillSwiftPage() {
   });
 
   React.useEffect(() => {
-    if (!form.getValues('billNo')) {
-        form.setValue('billNo', `INV-${String(Date.now()).slice(-4)}`);
-    }
+    form.setValue('billNo', `INV-${String(Date.now()).slice(-4)}`);
   }, [form]);
 
 
