@@ -91,18 +91,18 @@ export default function BillSwiftPage() {
 
 
   const watchedValues = form.watch();
-  const { items, amount, cgstPercent, sgstPercent } = watchedValues;
+  const { amount, cgstPercent, sgstPercent } = watchedValues;
 
   React.useEffect(() => {
-    const subtotal = items.reduce((acc, item) => {
+    const sub = watchedValues.items.reduce((acc, item) => {
         const totalValue = typeof item.totalValue === 'number' ? item.totalValue : 0;
         const dueNowPercent = typeof item.dueNowPercent === 'number' ? item.dueNowPercent : 0;
         const dueNowAmount = (totalValue * dueNowPercent) / 100;
         return acc + dueNowAmount;
     }, 0);
-    // We don't set the amount from items anymore, we use the form's `amount` value
-    // form.setValue('amount', subtotal, { shouldValidate: true });
-  }, [items, form]);
+    // This calculation is for reference, but we are allowing manual override
+    // form.setValue('amount', sub);
+  }, [watchedValues.items, form]);
 
 
   React.useEffect(() => {
@@ -114,10 +114,10 @@ export default function BillSwiftPage() {
     const sgst = (parsedSubtotal * parsedSgstPercent) / 100;
     const total = parsedSubtotal + cgst + sgst;
     
-    form.setValue('cgstAmount', cgst, { shouldValidate: true, shouldDirty: true });
-    form.setValue('sgstAmount', sgst, { shouldValidate: true, shouldDirty: true });
-    form.setValue('totalAmount', total, { shouldValidate: true, shouldDirty: true });
-    form.setValue('totalAmountInWords', `Rupees ${numberToWords(total)} Only`, { shouldValidate: true, shouldDirty: true });
+    form.setValue('cgstAmount', cgst, { shouldValidate: true });
+    form.setValue('sgstAmount', sgst, { shouldValidate: true });
+    form.setValue('totalAmount', total, { shouldValidate: true });
+    form.setValue('totalAmountInWords', `Rupees ${numberToWords(total)} Only`, { shouldValidate: true });
 
   }, [amount, cgstPercent, sgstPercent, form]);
 

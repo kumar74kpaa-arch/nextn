@@ -44,6 +44,7 @@ export default function BillForm({ bills, onLoadBill }: BillFormProps) {
   const handleItemChange = (index: number, field: 'totalValue' | 'dueNowPercent', value: number) => {
     const totalValue = field === 'totalValue' ? value : items[index].totalValue;
     const dueNowPercent = field === 'dueNowPercent' ? value : items[index].dueNowPercent;
+    if (isNaN(totalValue) || isNaN(dueNowPercent)) return;
     const dueNowAmount = (totalValue * dueNowPercent) / 100;
     setValue(`items.${index}.dueNowAmount`, dueNowAmount, { shouldValidate: true });
   }
@@ -229,7 +230,7 @@ export default function BillForm({ bills, onLoadBill }: BillFormProps) {
                         <FormLabel>Total Value</FormLabel>
                         <FormControl>
                         <Input type="number" placeholder="0.00" {...field} onChange={(e) => {
-                          field.onChange(e);
+                          field.onChange(e.target.valueAsNumber);
                           handleItemChange(index, 'totalValue', e.target.valueAsNumber);
                         }}/>
                         </FormControl>
@@ -245,7 +246,7 @@ export default function BillForm({ bills, onLoadBill }: BillFormProps) {
                         <FormLabel>Due Now (%)</FormLabel>
                         <FormControl>
                         <Input type="number" placeholder="100" {...field} onChange={(e) => {
-                          field.onChange(e);
+                          field.onChange(e.target.valueAsNumber);
                           handleItemChange(index, 'dueNowPercent', e.target.valueAsNumber);
                         }}/>
                         </FormControl>
@@ -294,7 +295,7 @@ export default function BillForm({ bills, onLoadBill }: BillFormProps) {
                     <FormItem>
                         <FormLabel>Subtotal Amount</FormLabel>
                         <FormControl>
-                        <Input type="number" {...field} />
+                          <Input type="number" {...field} onChange={(e) => field.onChange(e.target.valueAsNumber)} />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -309,7 +310,7 @@ export default function BillForm({ bills, onLoadBill }: BillFormProps) {
                     <FormItem>
                         <FormLabel>CGST (%)</FormLabel>
                         <FormControl>
-                        <Input type="number" placeholder="e.g., 9" {...field} />
+                          <Input type="number" placeholder="e.g., 9" {...field} onChange={(e) => field.onChange(e.target.valueAsNumber)} />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -322,7 +323,7 @@ export default function BillForm({ bills, onLoadBill }: BillFormProps) {
                     <FormItem>
                         <FormLabel>SGST (%)</FormLabel>
                         <FormControl>
-                        <Input type="number" placeholder="e.g., 9" {...field} />
+                          <Input type="number" placeholder="e.g., 9" {...field} onChange={(e) => field.onChange(e.target.valueAsNumber)} />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -374,7 +375,7 @@ export default function BillForm({ bills, onLoadBill }: BillFormProps) {
                   <FormItem>
                       <FormLabel>Total in Words</FormLabel>
                       <FormControl>
-                      <Input readOnly value={field.value} className="bg-muted/60" />
+                      <Input readOnly value={field.value || ''} className="bg-muted/60" />
                       </FormControl>
                   </FormItem>
                   )}
